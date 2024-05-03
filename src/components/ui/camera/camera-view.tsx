@@ -49,7 +49,10 @@ export const CameraView = React.forwardRef<unknown, CameraProps>(
 
     useEffect(() => {
       if (numberOfCameras > 0 || activeDeviceId) {
-        initCameraStream();
+        async function init() {
+          await initCameraStream();
+        }
+        init();
       }
     }, [numberOfCameras, activeDeviceId]);
 

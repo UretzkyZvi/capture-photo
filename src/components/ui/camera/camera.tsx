@@ -185,29 +185,26 @@ function Gallery() {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{images.length} Photos</DialogTitle>
-
-          <DialogDescription>
-            <ScrollArea className="h-[calc(80vh-_theme(spacing.16))]">
-              <div className="grid grid-cols-2 gap-2  ">
-                {images.map((image, index) => (
-                  <div key={index} className="relative ">
-                    <img src={image} alt="captured" />
-                    <Button
-                      className="absolute right-2 top-2 h-6 w-6 rounded-full  p-2 opacity-40 hover:opacity-100  "
-                      size={"icon"}
-                      variant={"destructive"}
-                      onClick={() => {
-                        removeImage(index);
-                      }}
-                    >
-                      <X className="fixed h-4 w-4  " />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </ScrollArea>
-          </DialogDescription>
         </DialogHeader>
+        <ScrollArea className="h-[calc(80vh-_theme(spacing.16))]">
+          <div className="grid grid-cols-2 gap-2  ">
+            {images.map((image, index) => (
+              <div key={index} className="relative ">
+                <img src={image} alt="captured" />
+                <Button
+                  className="absolute right-2 top-2 h-6 w-6 rounded-full  p-2 opacity-40 hover:opacity-100  "
+                  size={"icon"}
+                  variant={"destructive"}
+                  onClick={() => {
+                    removeImage(index);
+                  }}
+                >
+                  <X className="fixed h-4 w-4  " />
+                </Button>
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

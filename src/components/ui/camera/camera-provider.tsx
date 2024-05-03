@@ -22,7 +22,7 @@ interface CameraContextType {
   addImage: (imageData: string) => void;
   removeImage: (index: number) => void;
   resetImages: () => void;
-  initCameraStream: () => void;
+  initCameraStream: () => Promise<void>;
   takePhoto: () => string | undefined;
   stopStream: () => void;
   setFacingMode: React.Dispatch<React.SetStateAction<"user" | "environment">>;
@@ -55,7 +55,7 @@ export const CameraProvider = ({ children }: CameraProviderProps) => {
       );
       setDevices(videoDevices);
     }
-    fetchDevices();
+     fetchDevices();
   }, []);
 
   useEffect(() => {

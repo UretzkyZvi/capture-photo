@@ -34,13 +34,12 @@ const Camera: FC<CameraProps> = ({ onClosed, onCapturedImages }) => {
   const {
     images,
     addImage,
-
     numberOfCameras,
     resetImages,
-    stopStream,
-    devices,
+    stopStream
   } = useCamera();
 
+  
   const handleCapture = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (camera.current) {
@@ -117,7 +116,7 @@ const Camera: FC<CameraProps> = ({ onClosed, onCapturedImages }) => {
             </div>
           )}
 
-          {numberOfCameras > 1 && (
+          {numberOfCameras > 0 && (
             <div className="absolute bottom-0 right-6 z-10 md:bottom-0  md:right-14  md:top-auto">
               <SwitchCamera />
             </div>
@@ -129,7 +128,7 @@ const Camera: FC<CameraProps> = ({ onClosed, onCapturedImages }) => {
 };
 
 function SwitchCamera() {
-  const { numberOfCameras, devices, setActiveDeviceId } = useCamera();
+  const {devices, setActiveDeviceId } = useCamera();
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -137,7 +136,6 @@ function SwitchCamera() {
           variant={"default"}
           size={"icon"}
           className=" rounded-full   p-4 opacity-40 hover:opacity-100 "
-          disabled={numberOfCameras <= 1}
         >
           <ArrowLeftRight className="fixed h-6 w-6  " />
         </Button>

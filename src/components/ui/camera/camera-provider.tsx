@@ -1,5 +1,13 @@
 "use client";
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { SetNumberOfCameras } from "./camera-types";
 
 interface CameraProviderProps {
   children: React.ReactNode;
@@ -47,7 +55,7 @@ export const CameraProvider = ({ children }: CameraProviderProps) => {
   const [permissionDenied, setPermissionDenied] = useState<boolean>(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
 
-  useEffect(() => {
+  useMemo(() => {
     async function fetchDevices() {
       const devices = await navigator.mediaDevices.enumerateDevices();
       const videoDevices = devices.filter(
@@ -55,7 +63,7 @@ export const CameraProvider = ({ children }: CameraProviderProps) => {
       );
       setDevices(videoDevices);
     }
-     fetchDevices();
+    fetchDevices();
   }, []);
 
   useEffect(() => {
@@ -64,7 +72,6 @@ export const CameraProvider = ({ children }: CameraProviderProps) => {
       setActiveDeviceId(devices[0]?.deviceId);
     }
   }, [devices.length]);
-
 
   const initCameraStream = async () => {
     stopStream();
@@ -75,26 +82,50 @@ export const CameraProvider = ({ children }: CameraProviderProps) => {
     }
 
     try {
-      const newStream = await navigator.mediaDevices.getUserMedia({
-        audio: false,
-        video: {
-          deviceId: activeDeviceId ? { exact: activeDeviceId } : undefined,
-          facingMode: currentFacingMode,
-          width: { ideal: 1920 },
-          height: { ideal: 1080 },
-        },
-      });
-      setStream(newStream);
-      if (playerRef.current) {
-        playerRef.current.srcObject = newStream;
-      }
+      navigator.mediaDevices
+        .getUserMedia({
+          audio: false,
+          video: {
+            deviceId: activeDeviceId ? { exact: activeDeviceId } : undefined,
+            facingMode: currentFacingMode,
+            width: { ideal: 1920 },
+            height: { ideal: 1080 },
+          },
+        })
+        .then((stream: MediaStream) => {
+          setStream(handleSuccess(stream));
+          if (playerRef.current) {
+            playerRef.current.srcObject = stream;
+          }
+        })
+        .catch((error: Error) => {
+          handleError(error);
+        });
     } catch (error) {
       console.error("Failed to get camera stream", error);
       setPermissionDenied(true);
     }
   };
- 
+  const handleError = (error: Error) => {
+    console.error(error);
 
+    //https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
+    if (error.name === "PermissionDeniedError") {
+      setPermissionDenied(true);
+    } else {
+      setNotSupported(true);
+    }
+  };
+
+  const handleSuccess = (stream: MediaStream) => {
+    navigator.mediaDevices
+      .enumerateDevices()
+      .then((r) =>
+        setNumberOfCameras(r.filter((i) => i.kind === "videoinput").length),
+      );
+
+    return stream;
+  };
   const takePhoto = (): string | undefined => {
     if (
       !playerRef.current ||
@@ -142,7 +173,6 @@ export const CameraProvider = ({ children }: CameraProviderProps) => {
     return imgData;
   };
 
- 
   const addImage = (imageData: string) => {
     setImages((prevImages) => [...prevImages, imageData]);
   };
@@ -156,11 +186,11 @@ export const CameraProvider = ({ children }: CameraProviderProps) => {
   };
 
   const stopStream = () => {
-       if (stream) {
-      stream.getTracks().forEach(track => {
+    if (stream) {
+      stream.getTracks().forEach((track) => {
         track.stop();
       });
-      setStream(null);  // Clear the stream state
+      setStream(null); // Clear the stream state
       if (playerRef.current) {
         playerRef.current.srcObject = null;
       }

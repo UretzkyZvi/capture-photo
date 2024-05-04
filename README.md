@@ -110,9 +110,9 @@ This example demonstrates integrating the `Camera` component in an inventory man
 
 ```jsx
 import React, { useState } from 'react';
-import { CameraView } from './path/to/CameraView';
-import { Dialog, DialogTrigger, DialogContent, Button } from './path/to/ui-components';
-import { UploadIcon, CameraIcon } from '@heroicons/react/outline';
+import Camera from "@/components/ui/camera/camera";
+import { Dialog, DialogTrigger, DialogContent, Button } from "@/components/ui/dialog";
+import { UploadIcon, CameraIcon } from "lucide-react";
 
 function Inventory() {
   const [showDialog, setShowDialog] = useState(false);

@@ -12,6 +12,14 @@ This component follows the philosophy of not being a traditional component libra
 - **Flexible UI**: Designed with a base style but easily customizable with CSS or styled components.
 - **React and TypeScript**: Built using React and TypeScript to ensure type safety and component reusability.
 
+## Screenshots
+
+<p align="center">
+  <img src="./public/Screenshot_2024-05-04-08-51-18-600_com.android.chrome.jpg" width="400" alt="screenshot 1"/>
+  <img src="./public/Screenshot_2024-05-04-08-51-43-314_com.android.chrome.jpg" width="400" alt="screenshot 2"/>
+  <img src="./public/Screenshot_2024-05-04-08-51-59-283_com.android.chrome.jpg" width="400" alt="screenshot 3"/>
+</p>
+
 ## Folder Structure
 
 Here’s a quick overview of the relevant file structure for the `capture-photo` component:

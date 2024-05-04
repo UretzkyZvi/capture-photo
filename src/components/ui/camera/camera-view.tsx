@@ -1,7 +1,6 @@
-"use client";
+"use client";;
 import React, { useEffect, useImperativeHandle, useState } from "react";
 import { useCamera } from "@/components/ui/camera/camera-provider"; // Adjust import path as necessary
-import { cn } from "@/lib/utils";
 import { CameraProps, defaultErrorMessages } from "./camera-types";
 import { TriangleAlert, X } from "lucide-react";
 

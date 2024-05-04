@@ -119,7 +119,7 @@ function Inventory() {
   const [capturedImages, setCapturedImages] = useState([]);
 
   return (
-    <CameraProvider> {/* Ensure CameraProvider wraps your component */}
+ 
       <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
         <div className="flex items-center">
           <h1 className="text-lg font-semibold md:text-2xl">Inventory</h1>
@@ -130,13 +130,35 @@ function Inventory() {
               <h3 className="text-lg font-medium">Add product image</h3>
             </div>
             <div className="flex items-center justify-center space-x-4">
-              {/* File upload and camera capture buttons */}
+              <Dialog
+                  open={showDialog}
+                  onOpenChange={(open) => setShowDialog(open)}
+                >
+                  <DialogTrigger asChild>
+                    <Button variant="outline">
+                      <CameraIcon className="mr-2 h-5 w-5" />
+                      Capture Photo
+                      <span className="sr-only">Capture</span>
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="h-svh w-svw max-w-full p-0">
+                    <Camera
+                      onClosed={() => {
+                        setShowDialog(false);
+                      }}
+                      onCapturedImages={(images) => {
+                        setCapturedImages(images);
+                        setShowDialog(false);
+                      }}
+                    />
+                  </DialogContent>
+                </Dialog>
             </div>
             {/* Display captured images */}
           </div>
         </div>
       </main>
-    </CameraProvider>
+ 
   );
 }
 

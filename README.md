@@ -79,32 +79,11 @@ export default function RootLayout({
 }
 ```
 
-### Step 4: Integration
-
-Import and use the `CameraView` along with other required components within the `CameraProvider` context in your React application:
-
-```jsx
-import React from 'react';
-import { CameraView } from './path/to/CameraView';
-import { Button, Dialog } from './path/to/shadcn-ui-components';
-
-function Inventory() {
-  return (
-    <div>
-      <CameraView />
-      {/* Additional UI components */}
-    </div>
-  );
-}
-
-export default Inventory;
-```
-
-### Step 5: Customize as Needed
+### Step 4: Integration & Customize as Needed
 
 You can modify, style, and extend the components according to your UI and functionality requirements since they are now part of your codebase.
 
-## Example Usage
+#### Example Usage
 
 This example demonstrates integrating the `Camera` component in an inventory management system to capture product images. Ensure that the `CameraProvider` wraps your `Inventory` component or is higher up in the component tree.
 

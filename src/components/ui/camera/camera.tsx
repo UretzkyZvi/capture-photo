@@ -31,15 +31,9 @@ interface CameraProps {
 
 const Camera: FC<CameraProps> = ({ onClosed, onCapturedImages }) => {
   const camera = useRef<CameraType>();
-  const {
-    images,
-    addImage,
-    numberOfCameras,
-    resetImages,
-    stopStream
-  } = useCamera();
+  const { images, addImage, numberOfCameras, resetImages, stopStream } =
+    useCamera();
 
-  
   const handleCapture = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (camera.current) {
@@ -89,7 +83,7 @@ const Camera: FC<CameraProps> = ({ onClosed, onCapturedImages }) => {
           )}
         </div>
 
-        <CameraView ref={camera} facingMode="environment" />
+        <CameraView ref={camera}   />
         <div className="absolute bottom-0 left-[45%] z-20 md:bottom-auto md:left-auto md:right-14 md:top-[50%] ">
           <Button
             className={cn(
@@ -128,7 +122,20 @@ const Camera: FC<CameraProps> = ({ onClosed, onCapturedImages }) => {
 };
 
 function SwitchCamera() {
-  const {devices, setActiveDeviceId } = useCamera();
+  const { devices, setActiveDeviceId, activeDeviceId,switchCamera } = useCamera();
+
+  if (devices.length === 2) {
+    return (
+      <Button
+        variant="default"
+        size="icon"
+        className="rounded-full p-4 opacity-40 hover:opacity-100"
+        onClick={switchCamera}
+      >
+        <ArrowLeftRight className="fixed h-6 w-6" />
+      </Button>
+    );
+  }
   return (
     <Dialog>
       <DialogTrigger asChild>

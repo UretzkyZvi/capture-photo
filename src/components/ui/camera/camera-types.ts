@@ -5,7 +5,6 @@ export type SetNumberOfCameras = React.Dispatch<React.SetStateAction<number>>;
 export type SetNotSupported = React.Dispatch<React.SetStateAction<boolean>>;
 export type SetPermissionDenied = React.Dispatch<React.SetStateAction<boolean>>;
 export interface CameraProps {
-  facingMode?: FacingMode;
   numberOfCamerasCallback?(numberOfCameras: number): void;
   videoSourceDeviceId?: string | undefined;
   errorMessages?: {
@@ -19,22 +18,20 @@ export interface CameraProps {
 
 export type CameraType = React.ForwardRefExoticComponent<CameraProps & React.RefAttributes<unknown>> & {
   takePhoto(): string;
-  switchCamera(): FacingMode;
-  getNumberOfCameras(): number;
   stopCamera(): void;
 };
 
 export interface Navigator {
-    webkitGetUserMedia?: (constraints: MediaStreamConstraints,
-                          success: (stream: MediaStream) => void,
-                          error: (error: Error) => void) => void;
-    mozGetUserMedia?: (constraints: MediaStreamConstraints,
-                       success: (stream: MediaStream) => void,
-                       error: (error: Error) => void) => void;
-    msGetUserMedia?: (constraints: MediaStreamConstraints,
-                      success: (stream: MediaStream) => void,
-                      error: (error: Error) => void) => void;
-  }
+  webkitGetUserMedia?: (constraints: MediaStreamConstraints,
+    success: (stream: MediaStream) => void,
+    error: (error: Error) => void) => void;
+  mozGetUserMedia?: (constraints: MediaStreamConstraints,
+    success: (stream: MediaStream) => void,
+    error: (error: Error) => void) => void;
+  msGetUserMedia?: (constraints: MediaStreamConstraints,
+    success: (stream: MediaStream) => void,
+    error: (error: Error) => void) => void;
+}
 
 export interface ErrorMessages {
   noCameraAccessible?: string;

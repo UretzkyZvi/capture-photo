@@ -1,13 +1,6 @@
 "use client";
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { SetNumberOfCameras } from "./camera-types";
+import { createContext, useContext, useRef, useState } from "react";
+import { defaultErrorMessages } from "./camera-types";
 
 interface CameraProviderProps {
   children: React.ReactNode;
@@ -23,7 +16,7 @@ interface CameraContextType {
   containerRef: React.RefObject<HTMLDivElement>;
   notSupported: boolean;
   permissionDenied: boolean;
-  currentFacingMode: "user" | "environment";
+
   setNumberOfCameras: React.Dispatch<React.SetStateAction<number>>;
   setActiveDeviceId: React.Dispatch<React.SetStateAction<string | undefined>>;
   setDevices: React.Dispatch<React.SetStateAction<MediaDeviceInfo[]>>;
@@ -33,7 +26,7 @@ interface CameraContextType {
   initCameraStream: () => Promise<void>;
   takePhoto: () => string | undefined;
   stopStream: () => void;
-  setFacingMode: React.Dispatch<React.SetStateAction<"user" | "environment">>;
+  switchCamera: () => void;
 }
 
 const CameraContext = createContext<CameraContextType | undefined>(undefined);
@@ -45,33 +38,13 @@ export const CameraProvider = ({ children }: CameraProviderProps) => {
   const [images, setImages] = useState<string[]>([]);
   const [numberOfCameras, setNumberOfCameras] = useState(0);
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
-  const [currentFacingMode, setFacingMode] = useState<"user" | "environment">(
-    "user",
-  );
+
   const playerRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [notSupported, setNotSupported] = useState<boolean>(false);
   const [permissionDenied, setPermissionDenied] = useState<boolean>(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
-
-  useMemo(() => {
-    async function fetchDevices() {
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const videoDevices = devices.filter(
-        (device) => device.kind === "videoinput",
-      );
-      setDevices(videoDevices);
-    }
-    fetchDevices();
-  }, []);
-
-  useEffect(() => {
-    if (devices.length > 0) {
-      setNumberOfCameras(devices.length);
-      setActiveDeviceId(devices[0]?.deviceId);
-    }
-  }, [devices.length]);
 
   const initCameraStream = async () => {
     stopStream();
@@ -87,9 +60,9 @@ export const CameraProvider = ({ children }: CameraProviderProps) => {
           audio: false,
           video: {
             deviceId: activeDeviceId ? { exact: activeDeviceId } : undefined,
-            facingMode: currentFacingMode,
-            width: { ideal: 1920 },
-            height: { ideal: 1080 },
+            width: { min: 640, ideal: 1920 },
+            height: { min: 400, ideal: 1080 },
+            aspectRatio: { ideal: 1.7777777778 },
           },
         })
         .then((stream: MediaStream) => {
@@ -118,14 +91,18 @@ export const CameraProvider = ({ children }: CameraProviderProps) => {
   };
 
   const handleSuccess = (stream: MediaStream) => {
-    navigator.mediaDevices
-      .enumerateDevices()
-      .then((r) =>
-        setNumberOfCameras(r.filter((i) => i.kind === "videoinput").length),
-      );
+    navigator.mediaDevices.enumerateDevices().then((mediaDevice) => {
+      const devices = mediaDevice.filter((i) => i.kind === "videoinput");
+      setNumberOfCameras(devices.length);
+      setDevices(devices);
+      if (!activeDeviceId) {
+        setActiveDeviceId(devices[0]?.deviceId);
+      }
+    });
 
     return stream;
   };
+
   const takePhoto = (): string | undefined => {
     if (
       !playerRef.current ||
@@ -190,7 +167,7 @@ export const CameraProvider = ({ children }: CameraProviderProps) => {
       stream.getTracks().forEach((track) => {
         track.stop();
       });
-      setStream(null); // Clear the stream state
+      setStream(null);
       if (playerRef.current) {
         playerRef.current.srcObject = null;
       }
@@ -198,6 +175,17 @@ export const CameraProvider = ({ children }: CameraProviderProps) => {
     }
   };
 
+  const switchCamera = () => {
+    if (numberOfCameras < 1) {
+      throw new Error(defaultErrorMessages.noCameraAccessible);
+    }
+    const nextDevice = devices.find(
+      (device) => device.deviceId !== activeDeviceId,
+    );
+    if (nextDevice) {
+      setActiveDeviceId(nextDevice.deviceId);
+    }
+  };
   return (
     <CameraContext.Provider
       value={{
@@ -210,7 +198,7 @@ export const CameraProvider = ({ children }: CameraProviderProps) => {
         containerRef,
         notSupported,
         permissionDenied,
-        currentFacingMode,
+
         setNumberOfCameras,
         setActiveDeviceId,
         setDevices,
@@ -220,7 +208,8 @@ export const CameraProvider = ({ children }: CameraProviderProps) => {
         initCameraStream,
         takePhoto,
         stopStream,
-        setFacingMode,
+
+        switchCamera,
       }}
     >
       {children}

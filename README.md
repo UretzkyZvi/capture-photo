@@ -135,8 +135,19 @@ function Inventory() {
 export default Inventory;
 ```
 
-## Contributing and License
+## Community Contributions and Feedback
 
-Feel free to fork, modify, and use the components in any of your projects. If you make improvements or add new features that could benefit others, consider submitting a pull request.
+If you have suggestions for improving the component, including ideas for better naming, please feel free to share.
+
+### Open for Naming Suggestions
+
+The current name, capture-photo, describes the basic functionality but might not capture the full scope or potential of the component. If you have ideas for a name that better reflects its capabilities and use cases, please reach out or submit a pull request with your suggestions. Naming is vital as it not only helps in defining the component's purpose but also enhances its discoverability and usability.
+
+### How to Contribute
+
+1. **Fork the Repository**: Start by forking the repository where the `capture-photo` component is hosted.
+2. **Make Your Changes**: Implement your naming suggestions or any other enhancements you think are necessary.
+3. **Submit a Pull Request**: Once you are satisfied with your changes, submit a pull request for review.
 
 The component is open-sourced software licensed under the MIT license.
+ 
